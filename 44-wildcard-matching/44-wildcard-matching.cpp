@@ -1,26 +1,41 @@
+class IndexData {
+public:
+    bool isVisited, isTrue;
+    IndexData() {
+        isVisited = isTrue = false;
+    }
+};
 class Solution {
-    vector<bool> dp[2];
+private:
+    vector<vector<IndexData>> memo;
+    bool Match(const int& i, const int& j, const string& s, const string& p) {
+        if(i == s.size() && j == p.size()) {
+            return true;
+        }
+        if(j == p.size()) {
+            return false;
+        }
+        if(memo[i][j].isVisited) {
+            return memo[i][j].isTrue;
+        }
+        memo[i][j].isVisited = true;
+        if(i == s.size()) {
+            if(p[j] == '*') {
+                return memo[i][j].isTrue = Match(i, j+1, s, p);
+            }
+            return memo[i][j].isTrue = false;
+        }
+        if(p[j] == '*') {
+            return memo[i][j].isTrue = Match(i, j+1, s, p) | Match(i+1, j, s, p);
+        }
+        if(p[j] == '?' || s[i] == p[j]) {
+            return memo[i][j].isTrue = Match(i+1, j+1, s, p);
+        }
+        return memo[i][j].isTrue = false;
+    }
 public:
     bool isMatch(string s, string p) {
-        dp[0] = dp[1] = vector<bool>(p.size() + 1, false);
-        dp[s.size()&1][p.size()] = true;
-        for(int j = p.size() - 1; j >= 0 && p[j] == '*'; --j){
-            dp[s.size()&1][j] = true;
-        }
-        for(int i = s.size() - 1; i >= 0; --i) {
-            dp[i&1][p.size()] = false;
-            for(int j = p.size() - 1; j >= 0; --j){
-                if(p[j] == '*') {
-                    dp[i&1][j] = dp[i&1^1][j] | dp[i&1][j+1];
-                }
-                else if(p[j] == '?' || s[i] == p[j]) {
-                    dp[i&1][j] = dp[i&1^1][j+1];
-                }
-                else {
-                    dp[i&1][j] = false;
-                }
-            }
-        }
-        return dp[0][0];
+        memo = vector<vector<IndexData>>(s.size() + 1, vector<IndexData>(p.size() + 1));
+        return Match(0, 0, s, p);
     }
 };
