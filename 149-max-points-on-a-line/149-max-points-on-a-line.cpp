@@ -22,11 +22,11 @@ private:
         
         return HashValue({dy/g, dx/g});
     }
-    vector<map<ull, int>> pointSlopeData;
+    vector<unordered_map<ull, int>> pointSlopeData;
     
 public:
     int maxPoints(vector<vector<int>>& points) {
-        pointSlopeData = vector<map<ull, int>>(points.size());
+        pointSlopeData = vector<unordered_map<ull, int>>(points.size());
         
         int maxP = 0;
         for(int i = 0; i < points.size(); ++i) {
