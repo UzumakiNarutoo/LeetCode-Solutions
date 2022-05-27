@@ -5,7 +5,7 @@ typedef unsigned long long ull;
 
 class Solution {
 private:
-    vector<vector<int>> pointSlopeData, slopeIndex;
+    vector<unordered_map<ull, int>> pointSlopeData;
     
     ull HashValue(const vector<int>& slope) {
         int dy = slope[0], dx = slope[1];
@@ -25,38 +25,17 @@ private:
         return HashValue({dy/g, dx/g});
     }
     
-    void init(vector<vector<int>>& points) {
-        vector<ull> allHashs;
-        for(int i = 0; i < points.size(); ++i) {
-            for(int j = i+1; j < points.size(); ++j){
-                allHashs.push_back(slope(points[i], points[j]));
-            }
-        }
-        sort(allHashs.begin(), allHashs.end());
-        allHashs.erase(unique(allHashs.begin(), allHashs.end()), allHashs.end());
-        
-        pointSlopeData = vector<vector<int>>(points.size(), vector<int>(allHashs.size(), 1));
-        slopeIndex = vector<vector<int>>(points.size(), vector<int>(points.size()));
-        
-        for(int i = 0; i < points.size(); ++i) {
-            for(int j = i+1; j < points.size(); ++j) {
-                ull _slope = slope(points[i], points[j]);
-                slopeIndex[i][j] = lower_bound(allHashs.begin(), allHashs.end(), _slope) - allHashs.begin();
-            }
-        }
-    }
-    
 public:
     int maxPoints(vector<vector<int>>& points) {
-        init(points);
+        pointSlopeData = vector<unordered_map<ull, int>>(points.size());
         
-        int maxP = 1;
+        int maxP = 0;
         for(int i = 0; i < points.size(); ++i) {
             for(int j = i+1; j < points.size(); ++j) {
-                maxP = max(maxP, ++pointSlopeData[i][slopeIndex[i][j]]);
+                maxP = max(maxP, ++pointSlopeData[i][slope(points[i], points[j])]);
             }
         }
         
-        return maxP;
+        return maxP + 1;
     }
 };
