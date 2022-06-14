@@ -26,11 +26,6 @@ public:
 class Trie {
     Node *root;
     
-public:
-    Trie() {
-        root = new Node;
-    }
-    
     void clear_(Node *curNode) {
         if( curNode == NULL ) {
             return;
@@ -39,6 +34,11 @@ public:
         clear_(curNode -> get(1));
         delete( curNode );
         curNode = NULL;
+    }
+    
+public:
+    Trie() {
+        root = new Node;
     }
     
     void clear() {
